@@ -38,9 +38,9 @@ Organization
 
 Directories
   * chama - Python package
-  * ci - Travis CI requirements
   * documentation - User manual
-
+  * examples - Examples
+  
 Contact
 -------
    * Katherine Klise, Sandia National Laboratories, kaklise@sandia.gov

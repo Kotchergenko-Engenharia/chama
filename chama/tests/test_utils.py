@@ -57,7 +57,7 @@ class UtilsTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             cu._df_columns_required('sample_data', df, {'Col1': object,
                                                         'Col2': [np.int64,
-                                                                 np.bool8],
+                                                                 bool],
                                                         'Col3': [np.int64,
                                                                  np.float64]})
 
@@ -94,7 +94,7 @@ class UtilsTests(unittest.TestCase):
         # test passing multiple types with incorrect types
         self.assertFalse(cu._df_columns_exist(df, {'Col1': object,
                                                    'Col2': [np.int64,
-                                                            np.bool8],
+                                                            bool],
                                                    'Col3': [np.int64,
                                                             np.float64]}))
 

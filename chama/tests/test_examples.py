@@ -2,6 +2,7 @@ import unittest
 import os
 import sys
 from subprocess import call
+import sys
 
 test_dir = os.path.dirname(os.path.abspath(__file__))
 examples_dir = os.path.join(test_dir, '..', '..', 'examples')
@@ -29,6 +30,9 @@ class TestExamples(unittest.TestCase):
         flag = 0
         failed_examples = []
         for f in example_files:
+            # Skip WNTR example due to deprecation of pkg_resources on py<3.11
+            if sys.version_info[0:2] <= (3, 11) and f == 'water_network_example.py':
+                continue
             tmp_flag = call([sys.executable, os.path.join(examples_dir, f)])
             print(f, tmp_flag)
             if tmp_flag == 1:
