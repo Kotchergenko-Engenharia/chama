@@ -55,6 +55,18 @@ def main(
         q_str = config.get("Optimization", "q")
         solver = config.get("Optimization", "solver")
 
+        # [Grid]
+        grid_cfg = {
+            "x_size": config.getfloat("Grid", "x_size"),
+            "y_size": config.getfloat("Grid", "y_size"),
+            "z_size": config.getfloat("Grid", "z_size"),
+            "dx": config.getfloat("Grid", "dx"),
+            "dy": config.getfloat("Grid", "dy"),
+            "dz": config.getfloat("Grid", "dz"),
+            "tsize": config.getfloat("Grid", "tsize"),
+            "dt": config.getfloat("Grid", "dt"),
+        }
+
     except (configparser.NoOptionError, configparser.NoSectionError) as e:
         console.print(f"[bold red]Configuration Error:[/bold red] {e}")
         raise typer.Exit(code=1)
