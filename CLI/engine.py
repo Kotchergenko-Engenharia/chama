@@ -16,7 +16,12 @@ def solve_optimization_task(args):
 # ==============================================================================
 def load_data_files(files_cfg: dict) -> tuple:
     """Loads project CSV files into Pandas DataFrames."""
-    pass
+    wind_df = pd.read_csv(files_cfg["wind_file"], index_col="Time")
+    sources_df = pd.read_csv(files_cfg["sources_file"])
+    sensors_df = pd.read_csv(files_cfg["sensors_file"])
+    scenarios_df = pd.read_csv(files_cfg["scenarios_file"])
+
+    return wind_df, sources_df, sensors_df, scenarios_df
 
 
 def simulate_plumes(
@@ -55,3 +60,10 @@ def run_optimization_pipeline(files_cfg: dict, opt_cfg: dict, grid_cfg: dict):
     """
     Main function that orchestrates data flow between engine submodules.
     """
+    # 1. Data Loading
+    wind_df, sources_df, sensors_df, scenarios_df = load_data_files(files_cfg)
+
+    print(wind_df.head())
+    print(sources_df.head())
+    print(sensors_df.head())
+    print(scenarios_df.head())
