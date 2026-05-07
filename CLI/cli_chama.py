@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import typer
 from rich.console import Console
+
+from typing import Annotated
 
 app = typer.Typer(
     help="CLI for Sensor Placement Optimization",
@@ -10,10 +14,21 @@ app = typer.Typer(
 console = Console()
 
 
-# TODO
 @app.command()
-def main():
-    pass
+def main(
+    input_file: Annotated[
+        Path,
+        typer.Argument(
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            help="Path to the configuration file",
+        ),
+    ],
+):
+    r"""
+    Reads the provided text file, validates parameters, and triggers the CHAMA optimization engine.
+    """
 
 
 if __name__ == "__main__":
