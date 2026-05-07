@@ -41,11 +41,25 @@ def main(
         raise typer.Exit(code=1)
 
     try:
-        pass
+        # [Files]
+        files_cfg = {
+            "wind_file": config.get("Files", "wind_file"),
+            "sources_file": config.get("Files", "sources_file"),
+            "sensors_file": config.get("Files", "sensors_file"),
+            "scenarios_file": config.get("Files", "scenarios_file"),
+        }
 
     except (configparser.NoOptionError, configparser.NoSectionError) as e:
         console.print(f"[bold red]Configuration Error:[/bold red] {e}")
         raise typer.Exit(code=1)
+
+    # File Existence Verification
+    for file_label, file_path in files_cfg.items():
+        if not Path(file_path).is_file():
+            console.print(
+                f"[bold red]File Not Found Error:[/bold red] The file '{file_path}' mapped to {file_label} does not exist."
+            )
+            raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
