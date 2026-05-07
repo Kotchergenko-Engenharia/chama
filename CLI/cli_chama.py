@@ -49,6 +49,12 @@ def main(
             "scenarios_file": config.get("Files", "scenarios_file"),
         }
 
+        # [Optimization]
+        budget_str = config.get("Optimization", "budget")
+        k_str = config.get("Optimization", "k")
+        q_str = config.get("Optimization", "q")
+        solver = config.get("Optimization", "solver")
+
     except (configparser.NoOptionError, configparser.NoSectionError) as e:
         console.print(f"[bold red]Configuration Error:[/bold red] {e}")
         raise typer.Exit(code=1)
@@ -60,6 +66,28 @@ def main(
                 f"[bold red]File Not Found Error:[/bold red] The file '{file_path}' mapped to {file_label} does not exist."
             )
             raise typer.Exit(code=1)
+
+    try:
+        opt_cfg = {
+            "budget_list": [
+                int(p.strip())
+                for p in budget_str.replace("[", "").replace("]", "").split(",")
+            ],
+            "k_list": [
+                int(k.strip())
+                for k in k_str.replace("[", "").replace("]", "").split(",")
+            ],
+            "q_list": [
+                float(q.strip())
+                for q in q_str.replace("[", "").replace("]", "").split(",")
+            ],
+            "solver": solver,
+        }
+    except ValueError:
+        console.print(
+            "[bold red]Format Error:[/bold red] Parameters budget, k, and q must be comma-separated numbers."
+        )
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
