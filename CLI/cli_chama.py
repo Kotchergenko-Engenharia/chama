@@ -7,6 +7,8 @@ from rich.console import Console
 
 from typing import Annotated
 
+from engine import run_optimization_pipeline
+
 app = typer.Typer(
     help="CLI for Sensor Placement Optimization",
     add_completion=False,
@@ -107,9 +109,7 @@ def main(
     # ---------------------------------------------------------
     init_time = time.time()
 
-    # TODO
-    # Call run_optimization_pipeline
-    # run_optimization_pipeline(files_cfg, opt_cfg, grid_cfg)
+    run_optimization_pipeline(files_cfg, opt_cfg, grid_cfg)
 
     total_time = time.time() - init_time
 
