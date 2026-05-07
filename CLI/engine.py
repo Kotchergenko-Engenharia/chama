@@ -148,7 +148,13 @@ def dispatch_optimizations(
 
 def export_optimization_results(results_list: list):
     """Sorts the results list and saves the final CSV file."""
-    pass
+    output_df = pd.DataFrame(results_list)
+    output_df.sort_values(
+        by=["Votes (k)", "Failure Prob (q)", "Budget (p)"], inplace=True
+    )
+
+    results_output_file = Path("optimization_results.csv")
+    output_df.to_csv(results_output_file, index=False, sep=";", decimal=",")
 
 
 # ==============================================================================
@@ -171,3 +177,6 @@ def run_optimization_pipeline(files_cfg: dict, opt_cfg: dict, grid_cfg: dict):
     results_list = dispatch_optimizations(
         min_det_time, sensor_chars, scenarios_df, opt_cfg
     )
+
+    # 5. Export
+    export_optimization_results(results_list)
