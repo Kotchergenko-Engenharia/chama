@@ -1,8 +1,12 @@
+import warnings
 from pathlib import Path
+
 import pandas as pd
 import numpy as np
 
 import chama
+
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 # ==============================================================================
@@ -62,7 +66,24 @@ def calculate_impacts(
     signal: pd.DataFrame, sensors_df: pd.DataFrame, grid_cfg: dict
 ) -> tuple:
     """Cross-references plumes with sensor positions to determine detection times."""
-    pass
+    tar = np.arange(0, grid_cfg["tsize"], grid_cfg["dt"])
+    sensors_dict = {}
+
+    for _, row in sensors_df.iterrows():
+        s_name = row["Sensor"]
+        loc = chama.sensors.Stationary(location=(row["X"], row["Y"], row["Z"]))
+        pt = chama.sensors.Point(threshold=row["Threshold"], sample_times=tar)
+        sensors_dict[s_name] = chama.sensors.Sensor(position=loc, detector=pt)
+
+    det_times = chama.impact.extract_detection_times(signal, sensors_dict)
+    det_time_stats = chama.impact.detection_time_stats(det_times)
+
+    # Prepare exact format expected by Pyomo
+    min_det_time = det_time_stats[["Scenario", "Sensor", "Min"]].copy()
+    min_det_time.rename(columns={"Min": "Impact"}, inplace=True)
+    sensor_chars = sensors_df[["Sensor", "Cost", "X", "Y", "Z"]]
+
+    return min_det_time, sensor_chars
 
 
 def dispatch_optimizations(
@@ -92,3 +113,6 @@ def run_optimization_pipeline(files_cfg: dict, opt_cfg: dict, grid_cfg: dict):
 
     # 2. Physical Simulation
     signal_df = simulate_plumes(sources_df, wind_df, grid_cfg)
+
+    # 3. Impact Modeling
+    min_det_time, sensor_chars = calculate_impacts(signal_df, sensors_df, grid_cfg)
