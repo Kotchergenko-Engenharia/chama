@@ -138,16 +138,26 @@ def dispatch_optimizations(
 
     results_list = []
     with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
-        for p, k_val, q_val, time_hr, selected_sensors in executor.map(
-            solve_optimization_task, tasks
-        ):
+        for (
+            p,
+            k_val,
+            q_val,
+            time_hr,
+            is_solved,
+            frac_detected,
+            total_cost,
+            selected_sensors,
+        ) in executor.map(solve_optimization_task, tasks):
             sensors_str = " | ".join(selected_sensors) if selected_sensors else "None"
             results_list.append(
                 {
                     "Budget (p)": p,
                     "Votes (k)": k_val,
                     "Failure Prob (q)": q_val,
+                    "Optimization Solved": is_solved,
                     "Expected Time (hr)": round(time_hr, 2),
+                    "Fraction Detected": round(frac_detected, 4),
+                    "Total Sensor Cost": round(total_cost, 2),
                     "Selected Sensors": sensors_str,
                 }
             )
