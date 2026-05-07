@@ -34,7 +34,16 @@ def solve_optimization_task(args):
     time_hr = res["Objective"] / 3600
     print(f" [OK] p={p:02d}, k={k}, q={q:.2f} solved in {time_hr:.2f} expected hours")
 
-    return p, k, q, time_hr, res["Sensors"]
+    return (
+        p,
+        k,
+        q,
+        time_hr,
+        res["Solved"],
+        res["FractionDetected"],
+        res["TotalSensorCost"],
+        res["Sensors"],
+    )
 
 
 # ==============================================================================
