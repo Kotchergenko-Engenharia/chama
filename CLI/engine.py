@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 
 import chama
+from chama.optimize import ImpactFormulation
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -16,7 +17,23 @@ def solve_optimization_task(args):
     """
     Worker function for parallel execution. Solves the MIP model for a specific p, k, q.
     """
-    pass
+    p, k, q, solver_name, df_impact, df_sensor, df_scenario = args
+
+    model = ImpactFormulation(k=k, q=q)
+
+    # Uses CHAMA's high-level wrapper
+    res = model.solve(
+        impact=df_impact,
+        sensor=df_sensor,
+        scenario=df_scenario,
+        sensor_budget=p,
+        mip_solver_name=solver_name,
+    )
+
+    time_hr = res["Objective"] / 3600
+    print(f" [OK] p={p:02d}, k={k}, q={q:.2f} solved in {time_hr:.2f} expected hours")
+
+    return p, k, q, time_hr, res["Sensors"]
 
 
 # ==============================================================================
