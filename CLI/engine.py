@@ -1,4 +1,5 @@
 import warnings
+import concurrent.futures
 from pathlib import Path
 
 import pandas as pd
@@ -110,7 +111,39 @@ def dispatch_optimizations(
     opt_cfg: dict,
 ) -> list:
     """Creates the task queue (p, k, q) and distributes it across CPU cores."""
-    pass
+    tasks = []
+    for p in opt_cfg["budget_list"]:
+        for k_val in opt_cfg["k_list"]:
+            for q_val in opt_cfg["q_list"]:
+                tasks.append(
+                    (
+                        p,
+                        k_val,
+                        q_val,
+                        opt_cfg["solver"],
+                        min_det_time,
+                        sensor_chars,
+                        scenarios_df,
+                    )
+                )
+
+    results_list = []
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for p, k_val, q_val, time_hr, selected_sensors in executor.map(
+            solve_optimization_task, tasks
+        ):
+            sensors_str = " | ".join(selected_sensors) if selected_sensors else "None"
+            results_list.append(
+                {
+                    "Budget (p)": p,
+                    "Votes (k)": k_val,
+                    "Failure Prob (q)": q_val,
+                    "Expected Time (hr)": round(time_hr, 2),
+                    "Selected Sensors": sensors_str,
+                }
+            )
+
+    return results_list
 
 
 def export_optimization_results(results_list: list):
@@ -133,3 +166,8 @@ def run_optimization_pipeline(files_cfg: dict, opt_cfg: dict, grid_cfg: dict):
 
     # 3. Impact Modeling
     min_det_time, sensor_chars = calculate_impacts(signal_df, sensors_df, grid_cfg)
+
+    # 4. Mathematical Resolution (MIP)
+    results_list = dispatch_optimizations(
+        min_det_time, sensor_chars, scenarios_df, opt_cfg
+    )
