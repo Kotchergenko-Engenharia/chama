@@ -128,7 +128,7 @@ def dispatch_optimizations(
                 )
 
     results_list = []
-    with concurrent.futures.ProcessPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
         for p, k_val, q_val, time_hr, selected_sensors in executor.map(
             solve_optimization_task, tasks
         ):
