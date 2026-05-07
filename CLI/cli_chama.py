@@ -32,6 +32,32 @@ def main(
 ):
     r"""
     Reads the provided text file, validates parameters, and triggers the CHAMA optimization engine.
+
+    [bold yellow]EXPECTED INPUT FILE FORMAT:[/bold yellow]
+    The input file must follow the standard INI structure. Below is an example
+    explaining each parameter:
+
+    [bold cyan]\[Files][/bold cyan]
+    [green]wind_file[/green] = wind_data_1hr.csv     [dim]# Wind data (Time, Wind Direction, Wind Speed, Stability)[/dim]
+    [green]sources_file[/green] = sources.csv        [dim]# Leakage sources (Scenario, X, Y, Z, Leakrate)[/dim]
+    [green]sensors_file[/green] = sensors.csv        [dim]# Candidate sensors (Sensor, X, Y, Z, Threshold, Cost)[/dim]
+    [green]scenarios_file[/green] = scenarios.csv    [dim]# Scenarios info (Scenario, Undetected Impact)[/dim]
+
+    [bold cyan]\[Optimization][/bold cyan]
+    [green]budget[/green] = 5, 10, 15                [dim]# List of sensor budgets (p) to evaluate, separated by commas[/dim]
+    [green]k[/green] = 1, 2                          [dim]# List of votes required for alarm (redundancy), separated by commas[/dim]
+    [green]q[/green] = 0.05, 0.10                    [dim]# List of sensor failure probabilities (0.0 to 1.0), separated by commas[/dim]
+    [green]solver[/green] = appsi_highs              [dim]# MIP Solver to use (e.g., appsi_highs, glpk)[/dim]
+
+    [bold cyan]\[Grid][/bold cyan]
+    [green]x_size[/green] = 100.0                    [dim]# Total X dimension of the domain (meters)[/dim]
+    [green]y_size[/green] = 100.0                    [dim]# Total Y dimension of the domain (meters)[/dim]
+    [green]z_size[/green] = 10.0                     [dim]# Total Z dimension of the domain (meters)[/dim]
+    [green]dx[/green] = 10.0                         [dim]# Spatial resolution step in X (meters)[/dim]
+    [green]dy[/green] = 10.0                         [dim]# Spatial resolution step in Y (meters)[/dim]
+    [green]dz[/green] = 10.0                         [dim]# Spatial resolution step in Z (meters)[/dim]
+    [green]tsize[/green] = 86400.0                   [dim]# Total simulation time (seconds)[/dim]
+    [green]dt[/green] = 3600.0                       [dim]# Simulation time step size (seconds)[/dim]
     """
     # ---------------------------------------------------------
     # 1. PARSING AND VALIDATION
