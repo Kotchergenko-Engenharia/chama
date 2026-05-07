@@ -1,3 +1,4 @@
+import configparser
 from pathlib import Path
 
 import typer
@@ -29,6 +30,22 @@ def main(
     r"""
     Reads the provided text file, validates parameters, and triggers the CHAMA optimization engine.
     """
+    # ---------------------------------------------------------
+    # 1. PARSING AND VALIDATION
+    # ---------------------------------------------------------
+    config = configparser.ConfigParser()
+    try:
+        config.read(input_file, encoding="utf-8")
+    except Exception as e:
+        console.print(f"[bold red]Error reading file:[/bold red] {e}")
+        raise typer.Exit(code=1)
+
+    try:
+        pass
+
+    except (configparser.NoOptionError, configparser.NoSectionError) as e:
+        console.print(f"[bold red]Configuration Error:[/bold red] {e}")
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
