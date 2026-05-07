@@ -296,7 +296,7 @@ class ImpactFormulation(object):
         # x_{a,i} variable indicates which sensor is the first to detect
         # scenario a
         model.x = pe.Var(indices_x, bounds=(0, 1))
-        model.s = pe.Var(
+        model.y = pe.Var(
             model.sensor_set, within=pe.Binary
         )  # 's' used for sensor placement
 
@@ -330,7 +330,7 @@ class ImpactFormulation(object):
         # Budget Constraint (Uses total_sensor_cost to respect original CHAMA logic)
         model.total_sensor_cost = pe.Expression(
             expr=sum(
-                float(sensor_cost[i]) * model.s[i] for i in L if i != dummy_sensor_name
+                float(sensor_cost[i]) * model.y[i] for i in L if i != dummy_sensor_name
             )
         )
         model.sensor_budget_con = pe.Constraint(
@@ -360,7 +360,7 @@ class ImpactFormulation(object):
                         for r in R_ai.get((a, i), [])
                         if (a, i, r) in indices_x
                     )
-                    <= m.s[i]
+                    <= m.y[i]
                 )
             return pe.Constraint.Skip
 
@@ -491,7 +491,7 @@ class ImpactFormulation(object):
         selected_sensors = [
             key
             for key in model.sensor_set
-            if key != dummy_sensor_name and pe.value(model.s[key]) > 0.5
+            if key != dummy_sensor_name and pe.value(model.y[key]) > 0.5
         ]
 
         # 2. Reconstruct Assessment based on k-voting
