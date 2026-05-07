@@ -1,3 +1,4 @@
+import time
 import configparser
 from pathlib import Path
 
@@ -100,6 +101,21 @@ def main(
             "[bold red]Format Error:[/bold red] Parameters budget, k, and q must be comma-separated numbers."
         )
         raise typer.Exit(code=1)
+
+    # ---------------------------------------------------------
+    # 2. ENGINE EXECUTION
+    # ---------------------------------------------------------
+    init_time = time.time()
+
+    # TODO
+    # Call run_optimization_pipeline
+    # run_optimization_pipeline(files_cfg, opt_cfg, grid_cfg)
+
+    total_time = time.time() - init_time
+
+    console.print(
+        f"\n[bold green]Success![/bold green] Engine completed all tasks in {total_time:.1f} seconds."
+    )
 
 
 if __name__ == "__main__":
